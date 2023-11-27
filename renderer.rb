@@ -18,7 +18,7 @@ module Redcarpet
         else
           <<~LATEX
             \\begin{sourceCodeN}\\begin{minted}[fontsize=\\footnotesize]{#{lang}}
-            #{code}\\end{minted}\\end{sourceCode}
+            #{code}\\end{minted}\\end{sourceCodeN}
           LATEX
         end
       end

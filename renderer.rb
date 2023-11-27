@@ -8,17 +8,21 @@ module Redcarpet
   module Render
     class LaTeX < StripDown
       def block_code(code, language)
-        lang, filename = language.split(':', 2)
+        lang, filename = language&.split(':', 2) || ['text', nil]
 
         if filename
           <<~LATEX
-            \\begin{sourceCode}{#{filename}}\\begin{minted}[fontsize=\\footnotesize]{#{lang}}
-            #{code}\\end{minted}\\end{sourceCode}
+            \\begin{sourceCode}{#{filename}}
+            \\begin{minted}[fontsize=\\footnotesize]{#{lang}}
+            #{code}\\end{minted}
+            \\end{sourceCode}
           LATEX
         else
           <<~LATEX
-            \\begin{sourceCodeN}\\begin{minted}[fontsize=\\footnotesize]{#{lang}}
-            #{code}\\end{minted}\\end{sourceCodeN}
+            \\begin{sourceCodeN}
+            \\begin{minted}[fontsize=\\footnotesize]{#{lang}}
+            #{code}\\end{minted}
+            \\end{sourceCodeN}
           LATEX
         end
       end
@@ -164,10 +168,11 @@ module Redcarpet
       end
 
       def escape_latex(text)
-        text.gsub('\\', '\\textbackslash{}')
+        text.gsub(/([{}])/) {|match| "\\#{match}"}
+            .gsub('\\', '\\textbackslash{}')
             .gsub('~', '\\textasciitilde{}')
             .gsub('^', '\\textasciicircum{}')
-            .gsub(/([\\{}%&$#_])/) {|match| "\\#{match}"}
+            .gsub(/([%&$#_])/) {|match| "\\#{match}"}
       end
     end
   end
